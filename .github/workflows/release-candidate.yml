@@ -1,6 +1,10 @@
 name: Publish Jibo NOVA Community prerelease
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'release-trigger/community-rc-2026-11-02-1.txt'
   workflow_dispatch:
     inputs:
       tag:
@@ -37,7 +41,7 @@ jobs:
         run: git diff --exit-code -- themes
       - name: Validate release tag input
         env:
-          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ inputs.tag || 'community-rc-2026-11-02-1' }}
         run: |
           if ! [[ "$RELEASE_TAG" =~ ^community-rc-[A-Za-z0-9._-]{5,60}$ ]]; then
             echo 'Release tag must begin community-rc- and have only safe tag characters.' >&2
@@ -47,7 +51,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ inputs.tag || 'community-rc-2026-11-02-1' }}
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Tag already published. Choose a new unique release candidate tag." >&2
