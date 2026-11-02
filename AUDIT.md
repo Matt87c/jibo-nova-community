@@ -1,12 +1,10 @@
-# Public export security review
+# Public source snapshot: static audit
 
-**Result: PASS (static scope only)**
+- Source created independently from five exported declarative themes; no private robot repository history was imported.
+- The five distributions contain manifest, README, banner, face.json, and open/listening/closed PNG assets only.
+- Automated source/ZIP version, size, checksum, PNG metadata and common-secret checks pass locally.
+- No executable Jibo skills, NOVA/OpenClaw settings, tokens, local network addresses, or private robot files were included.
+- Each theme retains developer credit Matt87c. Root LICENSE is preserved when importing to the existing GitHub repository.
+- The build is not hardware-certified; see docs/RELEASE_READINESS.md for unresolved gates.
 
-- Source comes only from five independent theme package folders, using a strict file allowlist.
-- No private repository, `.git` history, NOVA adapter, `Talk to NOVA` source, live robot settings, or private logs were copied.
-- Five theme-only release ZIPs rebuilt and validated against their source bytes and BEacon package format.
-- Plain-text files and release archive text scanned for common private IP addresses, credentials, access tokens, private key headers, user home paths and email addresses.
-- All included PNGs decoded and checked for embedded metadata.
-- No findings in the static checks.
-
-**Caveats:** This is not a complete forensic or supply-chain audit; it does not establish rights to third-party materials or prove on-device behavior. Review the public folder before publishing and perform physical Jibo QA before stable releases. Do not add private skills without a new audit.
+The static scanner is not a complete forensic, dependency or licensing audit. Check any future contributions separately.

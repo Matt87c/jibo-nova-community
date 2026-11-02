@@ -1,12 +1,7 @@
 # Contributing
 
-Contributions are welcome for original eye themes, documentation, and reviewed public-safe skills.
+Pull requests with new themes and non-sensitive improvements are welcome. Start with an issue describing the design. Keep each theme self-contained in `themes/<theme-slug>/` with a manifest, attribution, artwork, release builder, and validator.
 
-- Credit original creators and obtain necessary redistribution rights.
-- Do not import material or git history from the private `jibo-nova` repository.
-- Each theme should provide a manifest, artwork, install instructions, and an independently testable BEacon ZIP.
-- Confirm ZIP safety and test on hardware before calling a theme production-tested.
-- Never include secrets, local addresses, device identifiers, logs, or home automation configuration.
-- Public skills must undergo a separate code and dependency audit before release.
+Before submitting, run `python scripts/validate_all.py`. Contributors must have rights to license any artwork they provide and must not commit private keys, tokens, personal configuration, robot IDs, local file paths, home networking details, `.env` files, or generated logs. The maintainers may decline executable skills until a focused security review is completed.
 
-Submit changes through pull requests.
+No changes to a user's local 5x1/OpenJibo installation are part of contributing to this repo.

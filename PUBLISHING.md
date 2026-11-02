@@ -1,20 +1,26 @@
-# Publishing themes
+# Publishing this existing public GitHub repository
 
-Keep `Matt87c/jibo-nova` **private**; publish only audited standalone assets to this community repository.
+Target: https://github.com/Matt87c/jibo-nova-community
 
-## Package format
+**Never** change the private `Matt87c/jibo-nova` repository, copy its `.git` directory, or expose live robot/NOVA configuration.
 
-A BEacon theme ZIP contains `manifest.json`, `face/face.json`, PNG eye assets, and optional banner and README. Keep manifest name stable across versions so BEacon updates an existing installation.
+## 1. Commit the audited source and ZIPs
 
-For local installation, use **BEacon → Store → Themes → ⋯ → Upload Theme ZIP**, select the theme, and **Apply**.
+Use the isolated publishing snapshot. Never clone the private repo for this step.
 
-## Public release checklist
+- Run `python -m pip install Pillow==11.3.0`, then `python scripts/validate_all.py`.
+- Use `scripts/Import-To-Existing-Public-Repo.ps1` to import into a clone of only the public repo, or follow its manual instructions.
+- Inspect the diff before pushing. Keep GitHub's existing root MIT LICENSE untouched.
+- Confirm `themes/<slug>/dist/<slug>.zip` is actually committed and downloadable.
 
-1. Verify rights and attribution for every artwork and dependency.
-2. Run the archive and image validation checks.
-3. Review the actual Git diff and scan for secrets and identifiers.
-4. Test install, blink/listening states, rollback, and compatibility on real Jibo hardware.
-5. Publish a release with the installable theme ZIP.
-6. Coordinate Store listings with the BEacon maintainer, including any requirements for individual theme repositories.
+## 2. Publish a prerelease
 
-Do not claim hardware testing or official Store approval without confirmation.
+After the source is pushed and CI is green, in **GitHub > Actions > Publish Jibo NOVA Community prerelease > Run workflow**, enter a unique tag such as `community-rc-2026-11-01-1`.
+
+The workflow rebuilds/validates all themes, scans for common secrets, verifies reproducibility, and attaches five installable ZIPs plus `SHA256SUMS.txt` to the prerelease.
+
+**Do not promote to stable until** the five hardware acceptance checklists are signed off on the actual Jibo. See `docs/RELEASE_READINESS.md`.
+
+## 3. Understand Store indexing
+
+A combined monorepo GitHub release supports manual downloads. The native BEacon GitHub-source Store generally expects one theme per repository with a published stable release; discuss independent release repos or a maintainer-approved storefront with the 5x1 developer for Store-wide install/update.

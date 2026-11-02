@@ -1,0 +1,22 @@
+dist/*
+!dist/jibo-nova-halo-theme.zip
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.sqlite*
+*.db
+*.log
+*.bak
+*.zip
+
+# The vetted standalone theme ZIP must be tracked for public download.
+!dist/jibo-nova-halo-theme.zip

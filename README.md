@@ -40,6 +40,10 @@ scripts/
 
 Run `python -m pip install Pillow==11.3.0` and `python scripts/validate_all.py`. This builds and verifies the five included ZIPs using the same files the user downloads. GitHub Actions runs the same checks on pushes and pull requests.
 
+## Release candidates and production readiness
+
+See [Release readiness](docs/RELEASE_READINESS.md) for our independent theme versions, hardware acceptance gate, and prerelease workflow. Stable promotion is reserved for ZIPs tested on the physical robot.
+
 ## Compatibility and Store notes
 
 Themes target the BEam/BEacon theme interface (`jibo-tbd` 3.1.6+). Native Jibo eye movement is retained. These packages passed static checks, but physical robot QA for these exact builds is still recommended before claiming verified support.
