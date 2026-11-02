@@ -1,0 +1,76 @@
+name: Publish validated Jibo NOVA theme prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Unique release-candidate tag, e.g. community-rc-2026-11-01-1'
+        required: true
+        default: 'community-rc-2026-11-01-1'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jibo-nova-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout public project
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - name: Ensure all five source themes and release builder are present
+        run: |
+          test -f scripts/build_bundle.py || { echo 'ERROR: Production review source files have not been imported.' >&2; exit 1; }
+          test -f themes/catalog.json || { echo 'ERROR: Theme catalog not imported.' >&2; exit 1; }
+          python - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('themes')
+          themes = json.loads((root/'catalog.json').read_text())['themes']
+          assert len(themes) == 5, 'Expected five reviewed themes'
+          for t in themes:
+              p = root / t['slug']
+              for f in ('manifest.json', 'face/eye.png', 'face/eyeClosed.png', 'face/eyeListening.png'):
+                  assert (p / f).is_file(), f'Missing: {p / f}'
+          PY
+      - name: Install pinned image validator
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Build, validate, scan, and checksum theme ZIPs
+        run: python scripts/build_bundle.py
+      - name: Ensure committed ZIPs match the audited source
+        run: git diff --exit-code -- themes
+      - name: Validate unique prerelease tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          if ! [[ "$RELEASE_TAG" =~ ^community-rc-[A-Za-z0-9._-]{5,60}$ ]]; then
+            echo 'Invalid prerelease tag.' >&2
+            exit 1
+          fi
+      - name: Publish five installable assets as a prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo 'Release tag already exists; choose a new tag.' >&2
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" \
+            release-assets/*.zip \
+            release-assets/SHA256SUMS.txt \
+            --title "Jibo NOVA Community - $RELEASE_TAG" \
+            --notes-file release-assets/RELEASE_NOTES.md \
+            --target "$GITHUB_SHA" \
+            --prerelease
