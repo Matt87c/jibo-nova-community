@@ -1,33 +1,53 @@
 # Jibo NOVA Community
 
-Publicly shareable **Jibo eye themes** and future community skills for **5x1/OpenJibo** and **BEacon**.
+Open-source eye themes and future community skills for Jibo robots running **5x1/OpenJibo** and **BEacon**. Created and maintained by [Matt87c](https://github.com/Matt87c).
 
-**Developer:** [Matt87c](https://github.com/Matt87c)
+> **Community releases only.** This public project does not contain the developer's personal Jibo robot configuration, NOVA/OpenClaw gateway, adapter authentication, secrets, private network details, or robot data. It is deliberately separate from the private `jibo-nova` project.
 
-## Eye themes
+## Download the themes
 
-The following packages are being prepared for public distribution. They have **not yet been uploaded to this repository**.
-
-| Theme | Version | Description |
+| Theme | Version | Direct installable ZIP |
 | --- | --- | --- |
-| NOVA Core Holographic | 1.0.2 | Enlarged cyan holographic eye with matching blink artwork |
-| Quantum Iris Cybernetic | 1.0.1 | Purple-and-blue eye with transparent edges and blink artwork |
-| NOVA Halo | 1.0.3 | Futuristic halo-style eye |
-| NOVA Core | 1.0.1 | Original enlarged cyan design |
-| Quantum Iris | 1.0.1 | Original enlarged purple design |
+| NOVA Core Holographic (large cyan, almond eye) | 1.0.2 | [ZIP](themes/jibo-nova-core-holographic-theme/dist/jibo-nova-core-holographic-theme.zip) |
+| Quantum Iris Cybernetic (purple almond eye) | 1.0.1 | [ZIP](themes/jibo-quantum-iris-cybernetic-theme/dist/jibo-quantum-iris-cybernetic-theme.zip) |
+| NOVA Halo | 1.0.3 | [ZIP](themes/jibo-nova-halo-theme/dist/jibo-nova-halo-theme.zip) |
+| NOVA Core (original enlarged design) | 1.0.1 | [ZIP](themes/jibo-nova-core-theme/dist/jibo-nova-core-theme.zip) |
+| Quantum Iris (original enlarged design) | 1.0.1 | [ZIP](themes/jibo-quantum-iris-theme/dist/jibo-quantum-iris-theme.zip) |
 
-When released, install an individual theme in **BEacon → Store → Themes → ⋯ → Upload Theme ZIP**, then select it and choose **Apply**.
+**Manual BEacon installation:** In BEacon go to **Store → Themes → ⋯ → Upload Theme ZIP**. Select a downloaded theme ZIP, then select the installed theme and **Apply**. The previous stock appearance can be restored with **None**. Do not extract the ZIP before uploading.
+
+Each theme includes a manifest, source artwork, a banner, build instructions, release validation, and developer attribution. The packages are **themes, not executable skills**.
 
 ## Community skills
 
-Future public-safe skills will be placed in `skills/`. The personal **Talk to NOVA** integration is not publicly released pending a separate code, security, and third-party licensing audit.
+The [`skills/`](skills/) directory is reserved for reusable, independently reviewed skills. **Talk to NOVA is not published here.** It currently depends on a private home installation and needs a separate source, security, architecture, and licensing review before any public version can be offered. No example skill ZIP is being misrepresented as an installable public product.
 
-## Privacy
+## Project layout
 
-The private `Matt87c/jibo-nova` robot setup repository is separate. This public repository does **not** include personal credentials, home network configuration, device-specific settings, or private repository history.
+```text
+themes/
+  jibo-nova-core-holographic-theme/
+  jibo-quantum-iris-cybernetic-theme/
+  jibo-nova-halo-theme/
+  jibo-nova-core-theme/
+  jibo-quantum-iris-theme/
+skills/
+scripts/
+.github/workflows/
+```
 
-## License
+## Rebuilding and testing
 
-[MIT](LICENSE) for the software and material included here where the copyright holder has the right to license it. Contributors and publishers must clear third-party artwork and dependencies before publication.
+Run `python -m pip install Pillow==11.3.0` and `python scripts/validate_all.py`. This builds and verifies the five included ZIPs using the same files the user downloads. GitHub Actions runs the same checks on pushes and pull requests.
 
-This is an independent community project, not an official Jibo or 5x1 release.
+## Compatibility and Store notes
+
+Themes target the BEam/BEacon theme interface (`jibo-tbd` 3.1.6+). Native Jibo eye movement is retained. These packages passed static checks, but physical robot QA for these exact builds is still recommended before claiming verified support.
+
+The BEacon Store's native GitHub release discovery is typically designed around **one theme or skill per repository**. This collection is a single public home for code and manual ZIP downloads. To offer independent **Store install/update** entries later, maintain separate public release repositories or another storefront structure accepted by the maintainers. A public GitHub release for this monorepo alone is not a guarantee of in-Store discovery.
+
+## Security and contributions
+
+See [SECURITY.md](SECURITY.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before sending contributions. Never upload local logs, device backups, certificates, credentials, network configuration, or `.env` files. No private Git history is copied into this repository.
+
+**License:** MIT for included community theme materials; third-party materials retain their own licenses, where applicable. Verify rights before adding future third-party assets.
