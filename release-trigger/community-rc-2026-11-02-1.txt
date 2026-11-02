@@ -1,0 +1,1 @@
+Release candidate trigger for the five validated Jibo NOVA Community theme ZIPs. This is a prerelease; hardware acceptance remains pending.
