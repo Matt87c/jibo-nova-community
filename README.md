@@ -9,10 +9,12 @@ Open-source eye themes and future community skills for Jibo robots running **5x1
 | Theme | Version | Direct installable ZIP |
 | --- | --- | --- |
 | NOVA Core Holographic (large cyan, almond eye) | 1.0.2 | [ZIP](themes/jibo-nova-core-holographic-theme/dist/jibo-nova-core-holographic-theme.zip) |
-| Quantum Iris Cybernetic (purple almond eye) | 1.0.1 | [ZIP](themes/jibo-quantum-iris-cybernetic-theme/dist/jibo-quantum-iris-cybernetic-theme.zip) |
+| Quantum Iris Cybernetic (purple almond eye) | 1.0.2 | [ZIP](themes/jibo-quantum-iris-cybernetic-theme/dist/jibo-quantum-iris-cybernetic-theme.zip) |
 | NOVA Halo | 1.0.3 | [ZIP](themes/jibo-nova-halo-theme/dist/jibo-nova-halo-theme.zip) |
-| NOVA Core (original enlarged design) | 1.0.1 | [ZIP](themes/jibo-nova-core-theme/dist/jibo-nova-core-theme.zip) |
-| Quantum Iris (original enlarged design) | 1.0.1 | [ZIP](themes/jibo-quantum-iris-theme/dist/jibo-quantum-iris-theme.zip) |
+| NOVA Core (original enlarged design) | 1.0.2 | [ZIP](themes/jibo-nova-core-theme/dist/jibo-nova-core-theme.zip) |
+| Quantum Iris (original enlarged design) | 1.0.2 | [ZIP](themes/jibo-quantum-iris-theme/dist/jibo-quantum-iris-theme.zip) |
+| NOVA Sentient Eye (almond shape, blue listening iris) | 1.0.2 candidate | Build from [theme source](themes/jibo-nova-sentient-eye-theme/) |
+| NOVA Sentient Orb (round shape, blue listening iris) | 1.0.2 candidate | Build from [theme source](themes/jibo-nova-sentient-orb-theme/) |
 
 **Manual BEacon installation:** In BEacon go to **Store → Themes → ⋯ → Upload Theme ZIP**. Select a downloaded theme ZIP, then select the installed theme and **Apply**. The previous stock appearance can be restored with **None**. Do not extract the ZIP before uploading.
 
@@ -31,6 +33,8 @@ themes/
   jibo-nova-halo-theme/
   jibo-nova-core-theme/
   jibo-quantum-iris-theme/
+  jibo-nova-sentient-eye-theme/
+  jibo-nova-sentient-orb-theme/
 skills/
 scripts/
 .github/workflows/
@@ -38,13 +42,15 @@ scripts/
 
 ## Rebuilding and testing
 
-Run `python -m pip install Pillow==11.3.0` and `python scripts/validate_all.py`. This builds and verifies the five included ZIPs using the same files the user downloads. GitHub Actions runs the same checks on pushes and pull requests.
+Run `python -m pip install Pillow==11.3.0` and `python scripts/validate_all.py`. This builds and verifies the seven included ZIPs using the same files the user downloads. GitHub Actions runs the same checks on pushes and pull requests.
 
 ## Release candidates and production readiness
 
 See [Release readiness](docs/RELEASE_READINESS.md) for our independent theme versions, hardware acceptance gate, and prerelease workflow. Stable promotion is reserved for ZIPs tested on the physical robot.
 
 ## Compatibility and Store notes
+
+The Sentient v1.0.2 ZIPs must be rebuilt from the current branch; existing checked-in v1.0.0 binary ZIPs are not the listening-eye update. Do not promote them as tested release assets until the exact new ZIPs pass hardware acceptance.
 
 Themes target the BEam/BEacon theme interface (`jibo-tbd` 3.1.6+). Native Jibo eye movement is retained. These packages passed static checks, but physical robot QA for these exact builds is still recommended before claiming verified support.
 

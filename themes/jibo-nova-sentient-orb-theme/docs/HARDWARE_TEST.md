@@ -1,4 +1,4 @@
-# Hardware acceptance record: NOVA Sentient Orb v1.0.0
+# Hardware acceptance record: NOVA Sentient Orb v1.0.2
 
 Target: real Jibo running 5x1/OpenJibo and BEacon compatible with jibo-tbd >= 3.1.6.
 Do not modify the working robot's firmware, TLS configuration, NOVA adapter or native skill packages.
@@ -12,7 +12,8 @@ Robot build: ______________  Release asset SHA256: ____________________________
 - [ ] Apply. Verify centering, eye scale, and no visible square borders or clipped glow.
 - [ ] Observe normal gaze motion across extremes and blinking; watch for texture artifacts.
 - [ ] Check eyeClosed/petting/sleep blending; no distracting flash or unexpected image changes.
-- [ ] Test Hey Jibo/listening and listening-to-idle transition; confirm intended color.
+- [ ] Test Hey Jibo/listening and listening-to-idle transition; confirm the distinct blue illuminated iris activates only when listening.
+- [ ] Test Talk to NOVA listening, processing, thinking, and speaking phases; record a photo of the blue listening iris and verify it does not stay lit while speaking.
 - [ ] Check standard BEacon menus, Agent Mode and Talk to NOVA launch and exit behavior.
 - [ ] Switch to None and verify stock appearance, then return to the theme.
 - [ ] Restart Jibo/BEam normally; verify theme persistence and normal behavior.

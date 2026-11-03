@@ -1,39 +1,39 @@
 {
-    "themes":  [
-                   {
-                       "slug":  "jibo-nova-core-holographic-theme",
-                       "name":  "NOVA Core Holographic",
-                       "version":  "1.0.2"
-                   },
-                   {
-                       "slug":  "jibo-quantum-iris-cybernetic-theme",
-                       "name":  "Quantum Iris Cybernetic",
-                       "version":  "1.0.1"
-                   },
-                   {
-                       "slug":  "jibo-nova-halo-theme",
-                       "name":  "NOVA Halo",
-                       "version":  "1.0.3"
-                   },
-                   {
-                       "slug":  "jibo-nova-core-theme",
-                       "name":  "NOVA Core",
-                       "version":  "1.0.1"
-                   },
-                   {
-                       "slug":  "jibo-quantum-iris-theme",
-                       "name":  "Quantum Iris",
-                       "version":  "1.0.1"
-                   },
-                   {
-                       "slug":  "jibo-nova-sentient-eye-theme",
-                       "name":  "NOVA Sentient Eye",
-                       "version":  "1.0.0"
-                   },
-                   {
-                       "slug":  "jibo-nova-sentient-orb-theme",
-                       "name":  "NOVA Sentient Orb",
-                       "version":  "1.0.0"
-                   }
-               ]
+  "themes": [
+    {
+      "slug": "jibo-nova-core-holographic-theme",
+      "name": "NOVA Core Holographic",
+      "version": "1.0.2"
+    },
+    {
+      "slug": "jibo-quantum-iris-cybernetic-theme",
+      "name": "Quantum Iris Cybernetic",
+      "version": "1.0.1"
+    },
+    {
+      "slug": "jibo-nova-halo-theme",
+      "name": "NOVA Halo",
+      "version": "1.0.3"
+    },
+    {
+      "slug": "jibo-nova-core-theme",
+      "name": "NOVA Core",
+      "version": "1.0.1"
+    },
+    {
+      "slug": "jibo-quantum-iris-theme",
+      "name": "Quantum Iris",
+      "version": "1.0.1"
+    },
+    {
+      "slug": "jibo-nova-sentient-eye-theme",
+      "name": "NOVA Sentient Eye",
+      "version": "1.0.2"
+    },
+    {
+      "slug": "jibo-nova-sentient-orb-theme",
+      "name": "NOVA Sentient Orb",
+      "version": "1.0.2"
+    }
+  ]
 }

@@ -1,64 +1,70 @@
 #!/usr/bin/env python3
-"""Validate a 5x1/BEacon eye theme source and the exact release ZIP."""
-import json
+"""Validate theme source, distinct native listening art, and exact ZIP."""
 from io import BytesIO
-from pathlib import Path
+import json
 import re
 from zipfile import ZipFile
-from PIL import Image
+from PIL import Image, ImageChops
+from build_release import ROOT, RELEASE, package_bytes
 
-ROOT = Path(__file__).resolve().parents[1]
-RELEASE = ROOT/'dist'/(ROOT.name+'.zip')
-REQUIRED = {'manifest.json','README.md','banner.png','face/face.json',
-            'face/eye.png','face/eyeListening.png','face/eyeClosed.png'}
-ALLOWED = REQUIRED
+REQUIRED = {'manifest.json', 'README.md', 'banner.png', 'face/face.json',
+            'face/eye.png', 'face/eyeListening.png', 'face/eyeClosed.png'}
 
 
-def check(files):
-    names = set(files)
-    assert REQUIRED <= names, 'Missing required files: '+str(sorted(REQUIRED-names))
-    assert names <= ALLOWED, 'Unexpected ZIP entries: '+str(sorted(names-ALLOWED))
-    assert len(names)<=1024 and sum(map(len,files.values()))<=64*1024*1024
-    manifest = json.loads(files['manifest.json'])
-    config = json.loads(files['face/face.json'])
-    assert manifest['type']=='theme' and manifest['supported']=='3.1.6'
-    assert re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',manifest['version'])
-    assert manifest['name'] and len(manifest['name']) < 100
-    assert config == {'backgroundColor':'#000000','eyeSize':135}
-    assert 'Matt87c' in files['README.md'].decode('utf-8')
-    for name in sorted(names):
-        if name.endswith('.png'):
-            with Image.open(BytesIO(files[name])) as im:
-                im.verify()
-            with Image.open(BytesIO(files[name])) as im:
-                im.load()
-                assert im.mode in ('RGB','RGBA') and max(im.size)<=4096
-                assert im.width>0 and im.height>0
-                # No EXIF/text chunks, GPS, prompt metadata, or local filenames.
-                assert not im.info, name+' contains image metadata'
-                if name.startswith('face/'):
-                    assert im.width==im.height, name+' must be square'
-    print('PASS:',manifest['name'],manifest['version'],len(files),'files')
+def validate(contents):
+    assert set(contents) == REQUIRED, 'Missing/extra theme assets'
+    manifest = json.loads(contents['manifest.json'])
+    face = json.loads(contents['face/face.json'])
+    assert manifest['type'] == 'theme' and manifest['supported'] == '3.1.6'
+    assert re.fullmatch(r'\d+\.\d+\.\d+', manifest['version'])
+    assert manifest['version'] == '1.0.2'
+    assert face == {'backgroundColor': '#000000', 'eyeSize': 135}
+    readme = contents['README.md'].decode('utf-8')
+    assert 'Matt87c' in readme and 'hardware' in readme.lower()
+    assert sum(map(len, contents.values())) <= 64 * 1024 * 1024
+
+    for filename, data in contents.items():
+        if filename.endswith('.png'):
+            with Image.open(BytesIO(data)) as img:
+                img.verify()
+            with Image.open(BytesIO(data)) as img:
+                img.load()
+                assert img.mode in ('RGB', 'RGBA') and 0 < max(img.size) <= 4096
+                assert not img.info, 'Embedded metadata in ' + filename
+                if filename.startswith('face/'):
+                    assert img.width == img.height
+
+    with Image.open(BytesIO(contents['face/eye.png'])) as src, \
+         Image.open(BytesIO(contents['face/eyeListening.png'])) as listening:
+        assert src.size == listening.size
+        a = src.convert('RGBA')
+        b = listening.convert('RGBA')
+        assert a.getchannel('A').tobytes() == b.getchannel('A').tobytes(), 'Eye silhouette changed'
+        assert ImageChops.difference(a.convert('RGB'), b.convert('RGB')).getbbox(), 'Listening image identical to idle'
+        c = src.width // 2
+        p = (c + round(src.width * 0.22), c)
+        assert a.convert('RGB').getpixel(p) != b.convert('RGB').getpixel(p), 'No illumination on iris'
     return manifest
 
 
 def main():
-    source={p: (ROOT/p).read_bytes() for p in sorted(ALLOWED) if (ROOT/p).is_file()}
-    manifest=check(source)
-    assert RELEASE.stat().st_size<=32*1024*1024
-    with ZipFile(RELEASE) as z:
-        assert z.testzip() is None, 'Bad ZIP checksum'
-        names=z.namelist()
-        assert len(names)==len(set(names)), 'Duplicate path'
-        assert set(names)==set(source), 'Files differ'
-        for item in z.infolist():
-            assert item.filename in ALLOWED
-            assert item.compress_type in (0,8)
-            assert not (item.external_attr >> 16) & 0o170000 == 0o120000, 'Symlink forbidden'
-        packaged={name:z.read(name) for name in names}
-    assert packaged==source, 'Source != release content'
-    assert check(packaged)==manifest
-    print('PASS: release ZIP exact source match, size and CRC')
+    expected = package_bytes()
+    manifest = validate(expected)
+    assert RELEASE.is_file() and RELEASE.stat().st_size <= 32 * 1024 * 1024
+    with ZipFile(RELEASE) as archive:
+        assert archive.testzip() is None, 'Bad ZIP CRC'
+        names = archive.namelist()
+        assert len(names) == len(set(names)), 'Duplicate ZIP path'
+        assert set(names) == REQUIRED
+        for item in archive.infolist():
+            assert item.filename in REQUIRED and '..' not in item.filename.split('/')
+            assert item.compress_type in (0, 8)
+            assert (item.external_attr >> 16) & 0o170000 != 0o120000, 'Symlink forbidden'
+        packaged = {name: archive.read(name) for name in names}
+    assert packaged == expected, 'ZIP differs from generated source'
+    assert validate(packaged) == manifest
+    print('PASS:', manifest['name'], manifest['version'], '- distinct blue listening eye / exact ZIP')
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()

@@ -1,17 +1,24 @@
 # Release readiness and acceptance
 
-**Current status: release candidate only.** Automated source/ZIP/security checks are passing, but physical robot testing of all five exact distributable ZIPs has **not** been signed off. Keep initial GitHub releases marked **prerelease**; do not market them as production-tested or official BEacon Store approved until hardware acceptance is documented.
+**Current status: release candidate only.** Automated source/ZIP/security checks are passing, but physical robot testing of all seven exact distributable ZIPs has **not** been signed off. Keep initial GitHub releases marked **prerelease**; do not market them as production-tested or official BEacon Store approved until hardware acceptance is documented.
 
 ## Release model (single community repository)
 
-A **community bundle release** attaches five independently installable ZIPs, a SHA256 checksum list, and release notes. Individual theme versions remain in their manifests; the bundle release uses a separate tag such as `community-rc-2026-11-01-1`. This avoids mistakenly renaming every theme to the same bundle version.
+A **community bundle release** attaches seven independently installable ZIPs, a SHA256 checksum list, and release notes. Individual theme versions remain in their manifests; the bundle release uses a separate tag such as `community-rc-2026-11-01-1`. This avoids mistakenly renaming every theme to the same bundle version.
 
-The GitHub Store's normal GitHub-source workflow uses the latest **stable release** of a **single-theme repository**, whereas this repository contains multiple themes. Bundle releases support manual downloading, not five native Store entries. For per-theme Store install/update, use separate release repositories or an alternate storefront approach agreed with BEacon maintainers.
+The GitHub Store's normal GitHub-source workflow uses the latest **stable release** of a **single-theme repository**, whereas this repository contains multiple themes. Bundle releases support manual downloading, not seven native Store entries. For per-theme Store install/update, use separate release repositories or an alternate storefront approach agreed with BEacon maintainers.
+
+## NOVA Sentient Eye / Orb listening-state fix (v1.0.2 candidate)
+
+The v1.0.0 Sentient Eye and Sentient Orb themes included `face/eyeListening.png` but it was **identical to `face/eye.png`** in both themes. The v1.0.2 build scripts now create a separate blue-lit listening iris from each respective idle artwork, preserving the transparency/geometry. Validation verifies a visible pixel difference, PNG integrity, and exact ZIP contents.
+
+The previous checked-in `dist/` ZIP files and GitHub release assets are not evidence of this correction. Rebuild, inspect and distribute the new candidate ZIPs, verify hardware behavior, and only then promote a stable release. The generator scripts are build tools and **are not included in installable theme ZIPs**.
 
 ## Automated acceptance
 
 - [x] Each manifest has a distinct name and correct version, theme type and minimum jibo-tbd compatibility declaration.
-- [x] Each ZIP is rebuilt deterministically and matches the source bytes, contains open/listening/closed image assets and no executable code.
+- [x] Each ZIP has deterministic build and verification scripts; Sentient listening art is generated from the source idle image and must be visibly distinct.
+- [ ] Verify exact new Sentient v1.0.2 ZIP assets from CI/build artifacts, including tests and physical-robot review.
 - [x] All PNGs decode, have permissible dimensions, and contain no embedded metadata.
 - [x] Static scan reports no common credentials, private network addresses, keys, or user home paths in the public snapshot.
 - [x] SHA256SUMS generated for release assets.
