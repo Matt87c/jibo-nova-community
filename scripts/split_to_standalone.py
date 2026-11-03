@@ -86,10 +86,14 @@ def create_one(source, item, owner, workspace, license_path):
     (workflow_dir / 'validate.yml').write_text(WORKFLOW, encoding='utf-8')
     run(sys.executable, 'scripts/build_release.py', cwd=dst)
     run(sys.executable, 'scripts/validate_release.py', cwd=dst)
-    run('git', 'add', 'LICENSE', '.github/workflows/validate.yml', cwd=dst)
+    # Retain the exact validated installable package in every standalone repository.
+    release_name = 'dist/' + slug + '.zip'
+    if not (dst / release_name).is_file():
+        raise RuntimeError('Missing rebuilt release ZIP: ' + release_name)
+    run('git', 'add', 'LICENSE', '.github/workflows/validate.yml', release_name, cwd=dst)
     run('git', 'commit', '-m', 'Add standalone theme licensing and CI', cwd=dst)
     run('git', 'push', 'origin', 'main', cwd=dst)
-    print('SOURCE READY; stable release withheld until hardware QA:', target, flush=True)
+    print('SOURCE AND ZIP READY; stable release withheld until hardware QA:', target, flush=True)
 
 
 def main():
@@ -116,6 +120,9 @@ def main():
     except ImportError:
         raise SystemExit('First run: python -m pip install Pillow==11.3.0')
     run('gh', 'auth', 'status')
+    login = run('gh', 'api', 'user', '-q', '.login').stdout.strip()
+    if login.lower() != args.owner.lower():
+        raise SystemExit('STOP: authenticated GitHub account is %s, expected %s' % (login, args.owner))
     with tempfile.TemporaryDirectory(prefix='beacon-split-') as td:
         workspace = Path(td)
         source = workspace / SOURCE_REPO
