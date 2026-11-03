@@ -61,6 +61,9 @@ def audit_history(folder):
 
 def read(folder,path):
     return (folder/path).read_text(encoding="utf-8-sig")
+def write_lf(path, value):
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(value)
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--apply",action="store_true")
@@ -99,7 +102,7 @@ def main():
             updated+="Version: "+version+". The maintainer reports testing this theme on a physical Jibo. "
             updated+="Detailed test scenarios in docs/HARDWARE_TEST.md remain unverified unless recorded. "
             updated+="This is a community theme by Matt87c, not an official 5x1 or BEacon Store listing.\n"
-            (folder/"README.md").write_text(updated,encoding="utf-8",newline="\n")
+            write_lf(folder/"README.md", updated)
             store="# BEacon Store submission: "+title+"\n\n"
             store+="Developer: Matt87c\n\nStandalone repository: https://github.com/"+repo+"\n\n"
             store+="Current stable version: "+version+"\n\nMinimum jibo-tbd version: 3.1.6\n\n"
@@ -117,7 +120,7 @@ def main():
             store+="or native robot skill code. This documentation update does not modify the existing "
             store+="release ZIP or version tag.\n\n"
             store+="Format: https://github.com/Jibo-Revival-Group/BEam/blob/master/docs/themes.md\n"
-            (folder/"docs/STORE.md").write_text(store,encoding="utf-8",newline="\n")
+            write_lf(folder/"docs/STORE.md", store)
             test=read(folder,"docs/HARDWARE_TEST.md")
             test=re.sub(r"^# Hardware acceptance record: .+$",
                         "# Hardware acceptance record: "+title+" v"+version,test,count=1,flags=re.M)
@@ -126,7 +129,7 @@ def main():
                 "The maintainer reports Jibo hardware testing and has published a stable community release. "
                 "Individual checks below have not been attested or independently verified; "
                 "record PASS only after verifying each scenario.\n\nTarget: real Jibo",1)
-            (folder/"docs/HARDWARE_TEST.md").write_text(test,encoding="utf-8",newline="\n")
+            write_lf(folder/"docs/HARDWARE_TEST.md", test)
             if any((folder/p).read_bytes()!=blob for p,blob in saved.items()):
                 raise RuntimeError("Protected art/manifest/release changed in "+repo)
             run("git","diff","--check",cwd=folder)
