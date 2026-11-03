@@ -1,0 +1,2 @@
+Publish the verified two-ZIP NOVA Sentient Eye Duo v1.0.2 release.
+The individual BEacon Store repositories have already released v1.0.2.
