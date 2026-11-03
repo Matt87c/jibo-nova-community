@@ -17,7 +17,7 @@ def validate(contents):
     face = json.loads(contents['face/face.json'])
     assert manifest['type'] == 'theme' and manifest['supported'] == '3.1.6'
     assert re.fullmatch(r'\d+\.\d+\.\d+', manifest['version'])
-    assert manifest['version'] == '1.0.1'
+    assert manifest['version'] == '1.0.2'
     assert face == {'backgroundColor': '#000000', 'eyeSize': 135}
     readme = contents['README.md'].decode('utf-8')
     assert 'Matt87c' in readme and 'hardware' in readme.lower()
