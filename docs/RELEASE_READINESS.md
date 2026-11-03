@@ -8,9 +8,9 @@ A **community bundle release** attaches seven independently installable ZIPs, a 
 
 The GitHub Store's normal GitHub-source workflow uses the latest **stable release** of a **single-theme repository**, whereas this repository contains multiple themes. Bundle releases support manual downloading, not seven native Store entries. For per-theme Store install/update, use separate release repositories or an alternate storefront approach agreed with BEacon maintainers.
 
-## NOVA Sentient Eye / Orb listening-state fix (v1.0.1 candidate)
+## NOVA Sentient Eye / Orb listening-state fix (v1.0.2 candidate)
 
-The v1.0.0 Sentient Eye and Sentient Orb themes included `face/eyeListening.png` but it was **identical to `face/eye.png`** in both themes. The v1.0.1 build scripts now create a separate blue-lit listening iris from each respective idle artwork, preserving the transparency/geometry. Validation verifies a visible pixel difference, PNG integrity, and exact ZIP contents.
+The v1.0.0 Sentient Eye and Sentient Orb themes included `face/eyeListening.png` but it was **identical to `face/eye.png`** in both themes. The v1.0.2 build scripts now create a separate blue-lit listening iris from each respective idle artwork, preserving the transparency/geometry. Validation verifies a visible pixel difference, PNG integrity, and exact ZIP contents.
 
 The previous checked-in `dist/` ZIP files and GitHub release assets are not evidence of this correction. Rebuild, inspect and distribute the new candidate ZIPs, verify hardware behavior, and only then promote a stable release. The generator scripts are build tools and **are not included in installable theme ZIPs**.
 
@@ -18,7 +18,7 @@ The previous checked-in `dist/` ZIP files and GitHub release assets are not evid
 
 - [x] Each manifest has a distinct name and correct version, theme type and minimum jibo-tbd compatibility declaration.
 - [x] Each ZIP has deterministic build and verification scripts; Sentient listening art is generated from the source idle image and must be visibly distinct.
-- [ ] Verify exact new Sentient v1.0.1 ZIP assets from CI/build artifacts, including tests and physical-robot review.
+- [ ] Verify exact new Sentient v1.0.2 ZIP assets from CI/build artifacts, including tests and physical-robot review.
 - [x] All PNGs decode, have permissible dimensions, and contain no embedded metadata.
 - [x] Static scan reports no common credentials, private network addresses, keys, or user home paths in the public snapshot.
 - [x] SHA256SUMS generated for release assets.
