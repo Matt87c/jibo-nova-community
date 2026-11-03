@@ -4,16 +4,16 @@ A Jibo-inspired, futuristic cyan-and-electric-blue circular AI eye with a glossy
 
 **Status:** release candidate; automated checks and physical-robot acceptance must pass before claiming production readiness or official BEacon Store approval. This is an independent community theme, not an official 5x1/Jibo release.
 
-- **Version:** 1.0.1 (updates 1.0.0)
+- **Version:** 1.0.2 (updates 1.0.1)
 - **Supported theme API:** jibo-tbd 3.1.6 or later
 - **Native eye size:** 135% of stock
 - **Theme category:** visual-only, no executable skill code
 - **Developer:** Matt87c
 - **License:** MIT for repository-owned theme materials; verify the rights for any added third-party artwork
 
-## What's new in 1.0.1
+## What's new in 1.0.2
 
-The original v1.0.0 included `face/eyeListening.png`, but it was byte-for-byte identical to the idle `face/eye.png`. The packaging now creates a distinct blue-lit iris and illuminated listening ring from the original selected-eye artwork, preserving the exact alpha silhouette. The eye's normal and closed states remain unchanged. The new asset must still be verified on Jibo under native listening and Talk to NOVA.
+The original v1.0.0 included `face/eyeListening.png`, but it was byte-for-byte identical to the idle `face/eye.png`. The packaging now creates a distinct blue-lit iris and illuminated listening ring from the original selected-eye artwork, preserving the exact alpha silhouette. The eye's normal and closed states remain unchanged. The owner confirms both candidate themes function locally on Jibo; remaining hardware checklist items are not attested.
 
 ## Install or upgrade
 
@@ -38,8 +38,8 @@ Requires Python 3.9+ with Pillow 11.3.0. From the repository root:
 
 ```bash
 python -m pip install Pillow==11.3.0
-python themes/jibo-nova-sentient-orb-theme/scripts/build_release.py
-python themes/jibo-nova-sentient-orb-theme/scripts/validate_release.py
+python scripts/build_release.py
+python scripts/validate_release.py
 python scripts/validate_all.py
 ```
 
