@@ -90,7 +90,9 @@ def create_one(source, item, owner, workspace, license_path):
     release_name = 'dist/' + slug + '.zip'
     if not (dst / release_name).is_file():
         raise RuntimeError('Missing rebuilt release ZIP: ' + release_name)
-    run('git', 'add', 'LICENSE', '.github/workflows/validate.yml', release_name, cwd=dst)
+    run('git', 'add', 'LICENSE', '.github/workflows/validate.yml', cwd=dst)
+    # Some historical themes ignore dist/*.zip; force-stage only the validated archive.
+    run('git', 'add', '-f', release_name, cwd=dst)
     run('git', 'commit', '-m', 'Add standalone theme licensing and CI', cwd=dst)
     run('git', 'push', 'origin', 'main', cwd=dst)
     print('SOURCE AND ZIP READY; stable release withheld until hardware QA:', target, flush=True)
