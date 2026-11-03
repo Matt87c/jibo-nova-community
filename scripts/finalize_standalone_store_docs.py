@@ -97,8 +97,9 @@ def amend_review_branch(repo, sentient):
         if DOC_NOTE.strip() not in revised:
             revised = revised.rstrip() + DOC_NOTE
         if revised == content:
-            print("README already corrected: " + repo, flush=True)
-            return
+            sha = run("git", "rev-parse", "HEAD", cwd=folder)
+            print("README already corrected: {} at {}".format(repo, sha[:12]), flush=True)
+            return sha
         with readme.open("w", encoding="utf-8", newline="\n") as stream:
             stream.write(revised)
         run("git", "diff", "--check", cwd=folder)
@@ -109,7 +110,25 @@ def amend_review_branch(repo, sentient):
         run("git", "commit", "-m",
             "Clarify stable hardware status and immutable release ZIP", cwd=folder)
         run("git", "push", "origin", BRANCH, cwd=folder)
-        print("UPDATED REVIEW BRANCH: " + repo, flush=True)
+        sha = run("git", "rev-parse", "HEAD", cwd=folder)
+        print("UPDATED REVIEW BRANCH: {} at {}".format(repo, sha[:12]), flush=True)
+        return sha
+
+
+def wait_for_pr_head(repo, number, expected_sha):
+    """Wait for GitHub's PR endpoint to see the pushed head, not a stale earlier head."""
+    for attempt in range(24):
+        pr = pr_info(repo, number)
+        if pr.get("state") != "open":
+            raise RuntimeError("PR unexpectedly closed: {}".format(repo))
+        current = pr["head"]["sha"]
+        if current == expected_sha:
+            return pr
+        if attempt < 23:
+            print("Waiting for PR head to catch up: {} current={} expected={}".format(
+                repo, current[:12], expected_sha[:12]), flush=True)
+            time.sleep(5)
+    raise RuntimeError("PR head did not advance; leaving PR open: {}".format(repo))
 
 
 def wait_for_success(repo, sha):
@@ -154,13 +173,13 @@ def main():
             print("READY: {} PR #{} head={} tag={}".format(
                 repo, number, pr["head"]["sha"][:12], tag), flush=True)
             continue
-        amend_review_branch(repo, name.endswith(("sentient-eye-theme", "sentient-orb-theme")))
-        pr = pr_info(repo, number)
+        sha = amend_review_branch(
+            repo, name.endswith(("sentient-eye-theme", "sentient-orb-theme")))
+        pr = wait_for_pr_head(repo, number, sha)
         changed_files(repo, number)
-        sha = pr["head"]["sha"]
         wait_for_success(repo, sha)
-        if pr_info(repo, number)["head"]["sha"] != sha:
-            raise RuntimeError("PR changed after CI: {}".format(repo))
+        if wait_for_pr_head(repo, number, sha)["head"]["sha"] != sha:
+            raise RuntimeError("PR head changed after CI: {}".format(repo))
         # Merge only a reviewed, successful, three-file documentation PR.
         print("MERGING: {} #{}".format(repo, number), flush=True)
         run("gh", "pr", "merge", str(number), "--repo", repo,
